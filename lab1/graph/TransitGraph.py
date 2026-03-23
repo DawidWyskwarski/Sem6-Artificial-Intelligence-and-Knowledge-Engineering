@@ -27,7 +27,7 @@ class TransitGraph:
     def add_trip(self, trip: Trip) -> None:
         self.trips[trip.trip_id] = trip
 
-    def find_station_id_by_name(self, station_name: str) -> Optional[int]:
+    def find_station_id_by_name(self, station_name: str) -> int:
         name_lower = station_name.strip().lower()
         for station_id, station in self.stations.items():
             if station.name.strip().lower() == name_lower:

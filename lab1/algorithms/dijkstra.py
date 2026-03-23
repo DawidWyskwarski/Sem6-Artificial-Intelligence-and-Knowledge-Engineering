@@ -1,75 +1,58 @@
 import heapq
-from datetime import datetime, time, timedelta
-from collections.abc import Callable
+from datetime import datetime, timedelta
 from collections import defaultdict
-from typing import Optional, List, Tuple
+from typing import Optional, List
 
 from graph.TransitGraph import TransitGraph
 from graph.Edge import Edge
-from graph.Trip import Trip
-from graph.utils import can_take_this_train
+from algorithms.utils import can_take_this_train, reconstruct_path, time_cost
 
-class DijkstraAlgorithm:
-
-    def search(
-            self, 
-            graph: TransitGraph,
-            start_station_id: int,
-            desitnation_station_id: int,
-            start_time: datetime,
-            fun_opt: Callable[[datetime, Edge, Trip], int]) -> Tuple[Optional[List[Edge]], float]:
-        
-        queue = []
-        heapq.heappush(queue, (0, start_station_id))
-
-        best_costs: dict = defaultdict(lambda: float('inf'))
-        best_costs[start_station_id] = 0
-
-        came_from = {start_station_id: None}
-
-        while queue:
-            current_cost, current_station_id = heapq.heappop(queue)
-
-            current_time: datetime = start_time + timedelta(minutes=current_cost)
-
-            if current_cost > best_costs[current_station_id]:
-                continue
-
-            if current_station_id == desitnation_station_id:
-                return self._reconstruct_path(came_from, desitnation_station_id), current_cost
-            
-            for edge in graph.edges[current_station_id]:
-                trip = graph.trips[edge.trip_id]
-                
-                if not can_take_this_train(current_time, edge, trip):
-                    continue
-
-                new_cost = fun_opt(current_time, edge, trip) + current_cost
-                new_destination = edge.destination_stop_id
-
-                if new_cost < best_costs[new_destination]:
-                    best_costs[new_destination] = new_cost
-                    came_from[new_destination] = edge
-                    heapq.heappush(queue, (new_cost, new_destination))
-
-        return None, -1
+def dijkstra_search(
+    graph: TransitGraph,
+    start_station_id: int,
+    destination_station_id: int,
+    start_time: datetime) -> Optional[List[Edge]]:
     
+    # priority queue -> using heapq module
+    # minimal cost is always on top
+    queue = []
 
-    def _reconstruct_path(
-            self,
-            came_from: dict,
-            dest_id: int) -> List[Edge]:
+    heapq.heappush(queue, (0, start_station_id))
+    
+    best_costs: dict = defaultdict(lambda: float('inf'))
+    best_costs[start_station_id] = 0
+    
+    came_from = {start_station_id: None}
+    
+    while queue:
+        current_cost, current_station_id = heapq.heappop(queue)
+
+        # datetime at which we arrived at a given station 
+        current_time: datetime = start_time + timedelta(minutes=current_cost)
+
+        # If we already found better way to get to this station we skip it. 
+        if current_cost > best_costs[current_station_id]:
+            continue
         
-        path: List[Edge] = []
+        # If destination was found we return it
+        if current_station_id == destination_station_id:
+            return reconstruct_path(came_from, destination_station_id)
         
-        curr = dest_id
+        for edge in graph.edges[current_station_id]:
+        
+            trip = graph.trips[edge.trip_id]
 
-        while came_from[curr] is not None:
-            edge = came_from[curr]
+            # Some connections may not be available when we are having our trip
+            if not can_take_this_train(current_time, edge, trip):
+                continue
+            
+            new_cost = time_cost(current_time, edge, trip) + current_cost
+            next_station_id = edge.destination_stop_id
 
-            path.append(edge)
+            # if we find better way to get to a given station we update best_costs, came_from and push new edge to the queue
+            if new_cost < best_costs[next_station_id]:
+                best_costs[next_station_id] = new_cost
+                came_from[next_station_id] = edge
+                heapq.heappush(queue, (new_cost, next_station_id))
 
-            curr = edge.start_stop_id
-
-        path.reverse()
-        return path
+    return None

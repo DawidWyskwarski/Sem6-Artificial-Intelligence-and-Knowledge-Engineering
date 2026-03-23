@@ -1,7 +1,4 @@
 from dataclasses import dataclass
-from datetime import date, timedelta
-
-from graph.Trip import Trip
 
 @dataclass
 class Edge:

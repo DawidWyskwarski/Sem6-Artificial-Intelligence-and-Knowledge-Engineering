@@ -1,6 +1,6 @@
 import pandas as pd
-from datetime import date
 import time
+from datetime import date
 
 from graph.TransitGraph import TransitGraph
 from graph.Station import Station
@@ -10,8 +10,8 @@ from graph.Edge import Edge
 DATA_PATH = './data/csv/'
 
 def _load_stations(
-        graph: TransitGraph, 
-        stops_file_name: str) -> None:
+    graph: TransitGraph, 
+    stops_file_name: str) -> None:
     
     stations_df = pd.read_csv(DATA_PATH + stops_file_name)
 
@@ -38,11 +38,11 @@ def _load_stations(
         graph.add_station(station)
 
 def _load_trips(
-        graph: TransitGraph, 
-        trips_file_name: str, 
-        schedule_file_name: str, 
-        exceptions_file_name: str, 
-        routes_file_name: str) -> None: 
+    graph: TransitGraph, 
+    trips_file_name: str, 
+    schedule_file_name: str, 
+    exceptions_file_name: str, 
+    routes_file_name: str) -> None: 
     
     # The data format in csv are little weird YYYYMMDD
     # Need to convert it to normal python date
@@ -127,8 +127,8 @@ def _load_trips(
         )
 
 def _load_edges(
-        graph: TransitGraph, 
-        edges_file_name: str) -> None:
+    graph: TransitGraph, 
+    edges_file_name: str) -> None:
     
     # Time is stored as a HH::MM::SS
     # There can be hours after the midnight

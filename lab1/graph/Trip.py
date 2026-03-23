@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-from typing import List, Optional
-from datetime import date, timedelta
-
+from datetime import date
+from typing import List
 
 @dataclass
 class Trip:
@@ -10,10 +9,10 @@ class Trip:
     start_date: date
     finish_date: date
     weekdays: List[bool]
-    removed_days: set
-    added_days: set
+    removed_days: set[date]
+    added_days: set[date]
 
-    def is_active(self, date: date):
+    def is_active(self, date: date) -> bool:
         if date in self.removed_days:
             return False
         
