@@ -3,7 +3,8 @@ import time
 from datetime import datetime
 
 from algorithms.dijkstra import dijkstra_search
-from algorithms.a_star import astar_time_search
+from algorithms.a_star_time import astar_time_search
+from algorithms.a_star_transits import astar_transits_search
 from graph.TransitGraph import TransitGraph
 from graph.loader import loadGraph
 from formatter import parse_path
@@ -45,7 +46,7 @@ def main() -> None:
         if args.criterion == 't':
             algorithm = astar_time_search
         else:
-            raise NotImplementedError("Chill out man")
+            algorithm = astar_transits_search
     
     start_compute = time.time()
     print('Searching for the best path ...')

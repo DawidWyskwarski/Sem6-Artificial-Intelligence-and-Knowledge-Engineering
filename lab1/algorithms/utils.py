@@ -67,6 +67,15 @@ def time_cost(current_datetime: datetime, edge: Edge, trip: Trip) -> float:
     return waiting_minutes + edge.travel_time()
 
 
+# Must be larger than the longest possible journey in the network (in minutes)
+# to ensure transfer count always dominates over travel time in the g-score.
+# ~16h is a safe upper bound for Lower Silesia.
+TRANSIT_COST = 1_000
+
+def transit_cost(edge: Edge, prev_edge: Edge) -> float:
+    return TRANSIT_COST if edge.trip_id != prev_edge.trip_id else 0
+
+
 def reconstruct_path(
     came_from: dict,
     dest_id: int) -> List[Edge]:
