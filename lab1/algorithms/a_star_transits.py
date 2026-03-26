@@ -38,6 +38,8 @@ def astar_transits_search(
     # Parent pointers for path reconstruction.
     came_from = {start_state: (None, None)}
     
+    heuristic_cache: dict = {start_station_id: start_h}
+
     while queue:
     
         _, current_g, current_time_cost, current_station_id, current_trip_id = heapq.heappop(queue)
@@ -76,15 +78,19 @@ def astar_transits_search(
             )
 
             # Tentative real cost from start to this neighbor.
-            tentative_g = current_g + (edge_time_cost + edge_transit_cost)
+            tentative_g = current_g + edge_transit_cost
 
             new_destination = edge.destination_stop_id
             new_state = (new_destination, edge.trip_id)
 
             next_station = graph.stations[new_destination]
             # Heuristic estimate from neighbor to goal.
-            
-            heur_cost = distance_heuristic(next_station, destination_station)
+
+            if new_destination in heuristic_cache:
+                heur_cost = heuristic_cache[new_destination]    
+            else:
+                heur_cost = distance_heuristic(next_station, destination_station) 
+                heuristic_cache[new_destination] = heur_cost
             
             tentative_f = tentative_g + heur_cost
             new_time_cost = edge_time_cost + current_time_cost

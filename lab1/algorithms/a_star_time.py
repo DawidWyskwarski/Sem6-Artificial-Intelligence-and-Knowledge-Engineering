@@ -40,6 +40,8 @@ def astar_time_search(
     # Parent pointers for path reconstruction.
     came_from = {start_station_id: None}
     
+    heuristic_cache: dict = {start_station_id: start_h}
+
     while queue:
     
         _, current_g, current_station_id = heapq.heappop(queue)
@@ -74,7 +76,11 @@ def astar_time_search(
             
             next_station = graph.stations[new_destination]
             # Heuristic estimate from neighbor to goal.
-            heur_cost = distance_heuristic(next_station, destination_station)
+            if new_destination in heuristic_cache:
+                heur_cost = heuristic_cache[new_destination]    
+            else:
+                heur_cost = distance_heuristic(next_station, destination_station) 
+                heuristic_cache[new_destination] = heur_cost
             
             tentative_f = tentative_g + heur_cost
             

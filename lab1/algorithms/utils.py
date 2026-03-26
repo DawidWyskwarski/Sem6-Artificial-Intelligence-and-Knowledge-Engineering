@@ -105,7 +105,7 @@ def distance_heuristic(
     station: Station, 
     destination: Station) -> float:
     '''
-    Calculate the approximate time to get from the station to destination in a straight line. As a avg max speed of a trin `MAX_SPEED_KMH` was used
+    Calculate the approximate time to get from the station to destination in a straight line. As a avg max speed of a train `MAX_SPEED_KMH` was used
 
     @param station: stataion from which we calculate distance
     @param destination: station to which we calculate distance  

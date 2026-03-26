@@ -6,7 +6,7 @@ from algorithms.dijkstra import dijkstra_search
 from algorithms.a_star_time import astar_time_search
 from algorithms.a_star_transits import astar_transits_search
 from graph.TransitGraph import TransitGraph
-from graph.loader import loadGraph
+from graph.loader import load_graph
 from formatter import parse_path
 
 def add_arguments(parser: argparse.ArgumentParser) -> None:
@@ -35,7 +35,7 @@ def main() -> None:
     add_arguments(parser)
     args = parser.parse_args()
 
-    transit_graph: TransitGraph = loadGraph()
+    transit_graph: TransitGraph = load_graph()
 
     start_station_id = transit_graph.find_station_id_by_name(args.start)
     destination_station_id = transit_graph.find_station_id_by_name(args.destination)

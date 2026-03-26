@@ -43,7 +43,7 @@ def _load_trips(
     schedule_file_name: str, 
     exceptions_file_name: str, 
     routes_file_name: str) -> None: 
-    
+
     # The data format in csv are little weird YYYYMMDD
     # Need to convert it to normal python date
     def convert_to_date(date_val) -> date:
@@ -170,7 +170,7 @@ def _load_edges(
 
 # OMG the legendary self documenting code :O
 # the name is self explanatory 
-def loadGraph() -> TransitGraph: 
+def load_graph() -> TransitGraph: 
     print('Loading a graph ...')
     start_graph = time.time()
     graph = TransitGraph()
@@ -201,6 +201,3 @@ def loadGraph() -> TransitGraph:
     print(f'Finished loading a graph - took {round(time.time()-start_graph,2)}s')
 
     return graph
-
-if __name__ == "__main__":
-    loadGraph()
