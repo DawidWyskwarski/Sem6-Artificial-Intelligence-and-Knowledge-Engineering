@@ -12,14 +12,19 @@ from core.game_utils import (
 
 
 class GameState:
+    """
+    Represents the state of the game. 
+    Contains information about the position of pieces and provides methods to generate subsequent valid game states.
+    """
+
 
     @dataclass
     class Coordinate:
         """
-        Representation of the coordinates on the board.
+        Represents 2D coordinates on the game board.
         Used as a structured object to enhance readability over generic tuples.
 
-        Doesn't guarantee being in the scope of the board.
+        Note: Does not guarantee that the coordinates are within the board's bounds.
         """
 
         x: int
@@ -36,14 +41,21 @@ class GameState:
 
     def __init__(self, board: BoardType | None = None) -> None:
         """
-        Base constructor.
+        Initializes a new GameState. If no board is provided, a default board is created.
+
+        :param BoardType | None board: The initial board configuration, or None to use the default setup.
         """
         self._board = board if board is not None else initialize_default_board()
 
     @classmethod
     def default_from_dimensions(cls, width: int, height: int) -> GameState:
         """
-        Alternative constructor for width and height.
+        Alternative constructor that creates a new GameState with a default board of the specified dimensions.
+
+        :param int width: The width of the board.
+        :param int height: The height of the board.
+        
+        :return GameState: A new GameState instance with the specified dimensions.
         """
         return cls(initialize_default_board(width, height))
 
@@ -70,10 +82,9 @@ class GameState:
         :return: GameState object representing a new state.
         """
 
-        # Perform a deep copy of the 2D list to avoid mutating the original board
+        # Deep copy
         new_state = [row[:] for row in self.board]
 
-        # Access the board as: board[row_index][column_index], which translates to board[y][x]
         tmp = new_state[start.y][start.x]
 
         new_state[start.y][start.x] = Piece.EMPTY
