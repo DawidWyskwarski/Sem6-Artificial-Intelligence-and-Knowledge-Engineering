@@ -70,3 +70,32 @@ def piece_difference(board: BoardType, player: Piece) -> int:
         if player == Piece.BLACK
         else white_count - black_count
     )
+
+def covered_area(board: BoardType, player: Piece) -> int:
+    """
+    Counts the individual squares covered by player pieces.
+
+    :param BoardType board: The current state of the board.
+    :param Piece player: The player whose pieces are being evaluated.
+
+    :return int: Covered individual squares.
+    """
+
+    delta = 1 if player == Piece.WHITE else -1
+
+    height = len(board)
+    width = len(board[0])
+
+    covered_area = 0
+
+    for y, row in enumerate(board):
+        for x, _ in enumerate(row):
+            delt_y = y + delta
+
+            if 0 <= delt_y < height:
+                if x - 1 >= 0 and board[delt_y][x-1] == player:
+                    covered_area += 1
+                elif x + 1 < width and board[delt_y][x+1] == player:
+                    covered_area += 1
+
+    return covered_area

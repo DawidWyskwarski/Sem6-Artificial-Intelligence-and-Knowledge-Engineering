@@ -1,5 +1,5 @@
 from core.piece import Piece
-from ai.player_heuristics import most_advanced_piece
+from ai.heuristics.player_heuristics import most_advanced_piece
 
 from test_utils import _, W, B
 

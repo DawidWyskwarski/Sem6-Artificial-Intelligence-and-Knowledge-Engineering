@@ -1,5 +1,5 @@
 from core.piece import Piece
-from ai.pieces_heuristics import penalty_for_enemies_in_fov
+from ai.heuristics.pieces_heuristics import penalty_for_enemies_in_fov
 
 from test_utils import _, B, W
 

@@ -1,5 +1,5 @@
 from core.piece import Piece
-from ai.player_heuristics import piece_difference
+from ai.heuristics.player_heuristics import piece_difference
 
 from test_utils import _, B, W
 

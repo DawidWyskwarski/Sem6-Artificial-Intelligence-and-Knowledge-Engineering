@@ -1,5 +1,5 @@
 from core.piece import Piece
-from ai.player_heuristics import is_one_move_to_victory
+from ai.heuristics.player_heuristics import is_one_move_to_victory
 
 from test_utils import _, B, W
 
@@ -7,8 +7,8 @@ from test_utils import _, B, W
 def test_is_one_move_to_victory_white_true():
     """White is one move away (y=1). Expected 1000."""
     board = [
-        [_, _, _, _],
         [_, W, _, _],
+        [_, _, _, _],
         [_, _, _, _],
         [_, _, _, _]
     ]
@@ -31,8 +31,8 @@ def test_is_one_move_to_victory_black_true():
     board = [
         [_, _, _, _],
         [_, _, _, _],
-        [_, B, _, _],
-        [_, _, _, _]
+        [_, _, _, _],
+        [B, _, _, _]
     ]
     assert is_one_move_to_victory(board, Piece.BLACK) == 1000
 

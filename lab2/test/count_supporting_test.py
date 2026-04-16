@@ -1,5 +1,5 @@
 from core.piece import Piece
-from ai.pieces_heuristics import count_supporting_each_other
+from ai.heuristics.pieces_heuristics import count_supporting_each_other
 
 from test_utils import (
     _, B, W

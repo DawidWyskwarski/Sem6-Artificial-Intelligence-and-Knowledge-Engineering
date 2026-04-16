@@ -1,5 +1,5 @@
 from core.piece import Piece
-from ai.pieces_heuristics import penalty_for_being_attacked
+from ai.heuristics.pieces_heuristics import penalty_for_being_attacked
 
 from test_utils import _, B, W
 
