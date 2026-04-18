@@ -1,4 +1,4 @@
-from core.game_state import BoardType
+from core.game_utils import BoardType
 from core.piece import Piece
 
 

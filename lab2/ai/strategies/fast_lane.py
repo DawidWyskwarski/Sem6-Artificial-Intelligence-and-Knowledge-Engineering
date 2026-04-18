@@ -6,7 +6,7 @@ from ai.heuristics.pieces_heuristics import (
     penalty_for_being_attacked,
     penalty_for_enemies_in_fov,
 )
-from ai.heuristics.player_heuristics import is_one_move_to_victory, most_advanced_piece
+from ai.heuristics.player_heuristics import victory, most_advanced_piece
 
 
 class FastLane(Strategy):
@@ -23,7 +23,7 @@ class FastLane(Strategy):
 
     def rate_position(self, board: BoardType, player: Piece) -> int:
         return (
-            self.WEIGHTS['victory'] * is_one_move_to_victory(board, player)
+            self.WEIGHTS['victory'] * victory(board, player)
             + self.WEIGHTS['attacked'] * penalty_for_being_attacked(board, player)
             + self.WEIGHTS['enemies_in_fov'] * penalty_for_enemies_in_fov(board, player)
             + self.WEIGHTS['advancement'] * most_advanced_piece(board, player)

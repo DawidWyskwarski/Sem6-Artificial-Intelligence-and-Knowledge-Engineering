@@ -1,5 +1,5 @@
 from core.piece import Piece
-from ai.heuristics.player_heuristics import is_one_move_to_victory
+from ai.heuristics.player_heuristics import victory
 
 from test_utils import _, B, W
 
@@ -12,7 +12,7 @@ def test_is_one_move_to_victory_white_true():
         [_, _, _, _],
         [_, _, _, _]
     ]
-    assert is_one_move_to_victory(board, Piece.WHITE) == 1000
+    assert victory(board, Piece.WHITE) == 1000
 
 
 def test_is_one_move_to_victory_white_false():
@@ -23,7 +23,7 @@ def test_is_one_move_to_victory_white_false():
         [_, W, _, _],
         [W, _, _, _]
     ]
-    assert is_one_move_to_victory(board, Piece.WHITE) == 0
+    assert victory(board, Piece.WHITE) == 0
 
 
 def test_is_one_move_to_victory_black_true():
@@ -34,7 +34,7 @@ def test_is_one_move_to_victory_black_true():
         [_, _, _, _],
         [B, _, _, _]
     ]
-    assert is_one_move_to_victory(board, Piece.BLACK) == 1000
+    assert victory(board, Piece.BLACK) == 1000
 
 
 def test_is_one_move_to_victory_black_false():
@@ -45,4 +45,4 @@ def test_is_one_move_to_victory_black_false():
         [_, _, _, _],
         [_, _, _, _]
     ]
-    assert is_one_move_to_victory(board, Piece.BLACK) == 0
+    assert victory(board, Piece.BLACK) == 0

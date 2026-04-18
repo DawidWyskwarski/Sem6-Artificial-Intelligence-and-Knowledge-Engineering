@@ -45,7 +45,8 @@ class GameState:
 
         :param BoardType | None board: The initial board configuration, or None to use the default setup.
         """
-        self._board = board if board is not None else initialize_default_board()
+
+        self._board = [row[:] for row in board] if board is not None else initialize_default_board()
 
     @classmethod
     def default_from_dimensions(cls, width: int, height: int) -> GameState:
@@ -57,6 +58,12 @@ class GameState:
         
         :return GameState: A new GameState instance with the specified dimensions.
         """
+        if width < 2:
+            raise ValueError("Width has to be at least 3")
+
+        if height < 4:
+            raise ValueError("Height has to be at least 5")
+
         return cls(initialize_default_board(width, height))
 
     def __str__(self) -> str:
@@ -150,6 +157,9 @@ class GameState:
         :raises RuntimeError: When turn is passed as `Piece.EMPTY`
         """
 
+        if self.is_final().index(0):
+            return []
+
         if turn == Piece.EMPTY:
             raise RuntimeError("Turn must be either Whites or Blacks")
 
@@ -160,3 +170,14 @@ class GameState:
         new_states = [self._move_piece(start, end) for start, end in valid_moves]
 
         return new_states
+    
+    def is_final(self) -> Tuple[bool, Piece | None]:
+        for piece in self._board[0]:
+            if piece == Piece.WHITE:
+                return (True, Piece.WHITE)
+        
+        for piece in self._board[-1]:
+            if piece == Piece.BLACK:
+                return (True, Piece.BLACK)
+
+        return (False, None)

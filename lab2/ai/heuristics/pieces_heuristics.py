@@ -1,5 +1,5 @@
 from ai.ai_utils import count_pieces_diagonally
-from core.game_state import BoardType
+from core.game_utils import BoardType
 from core.piece import Piece
 
 

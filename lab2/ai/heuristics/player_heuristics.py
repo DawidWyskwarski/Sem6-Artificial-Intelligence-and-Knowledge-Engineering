@@ -1,5 +1,5 @@
 from core.piece import Piece
-from core.game_state import BoardType
+from core.game_utils import BoardType
 
 
 def most_advanced_piece(board: BoardType, player: Piece) -> int:
@@ -26,9 +26,9 @@ def most_advanced_piece(board: BoardType, player: Piece) -> int:
     return max_advancement
 
 
-def is_one_move_to_victory(board: BoardType, player: Piece) -> int:
+def victory(board: BoardType, player: Piece) -> int:
     """
-    Calculates a large heuristic reward if the given player is one move away from victory (has reached the target row).
+    Calculates a large heuristic reward if the given player has reached the target row.
 
     :param BoardType board: The current state of the board.
     :param Piece player: The player whose pieces are being evaluated.

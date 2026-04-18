@@ -7,7 +7,7 @@ from ai.heuristics.pieces_heuristics import (
     penalty_for_being_attacked,
 )
 from ai.heuristics.player_heuristics import (
-    is_one_move_to_victory,
+    victory,
     piece_difference,
     covered_area,
     most_advanced_piece,
@@ -24,13 +24,13 @@ class Defensive(Strategy):
         "support": 1,
         "covered_area": 1,
         "attacked": 1,
-        "advanced_enemy": 1,
+        "advanced_enemy": -5,
         "piece_difference": 20,
     }
 
     def rate_position(self, board: BoardType, player: Piece) -> int:
         return (
-            self.WEIGHTS["victory"] * is_one_move_to_victory(board, player)
+            self.WEIGHTS["victory"] * victory(board, player)
             + self.WEIGHTS["support"] * count_supporting_each_other(board, player)
             + self.WEIGHTS["covered_area"] * covered_area(board, player)
             + self.WEIGHTS["attacked"] * penalty_for_being_attacked(board, player)
