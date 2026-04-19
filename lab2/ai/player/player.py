@@ -36,6 +36,10 @@ class Player:
         self.enemy_color = enemy_color(color)
         self.strategy = strategy
         self.depth = future_sight_depth
+        self.visited_nodes = 0
+
+    def __str__(self) -> str:
+        return f"Piece color: {self.color}\nStrategy: {self.strategy.__class__.__name__}\nReasoning depth: {self.depth}"
 
     def get_best_move(self, state: GameState) -> GameState:
         """
@@ -44,6 +48,7 @@ class Player:
         :param GameState state: Current game state
         :return GameState: Game state after the predicted best move.
         """
+        self.visited_nodes = 0
         return self._minimax(state, self.depth, True, float("-inf"), float("inf")).state
 
     def _minimax(
@@ -65,6 +70,8 @@ class Player:
         
         :return EvaluatedState: An object containing the optimal outcome state and its computed score.
         """
+
+        self.visited_nodes += 1
 
         # Rate state for leaves
         if depth == 0 or state.is_game_over()[0]:
