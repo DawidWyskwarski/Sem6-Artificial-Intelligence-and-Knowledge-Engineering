@@ -1,7 +1,10 @@
 from typing import List
 from core.piece import Piece
 
-type BoardType = List[List[Piece]]
+type Board = List[List[Piece]]
+"""
+Type alias to enhance readability.
+"""
 
 ROWS_PER_SIDE: int = 2
 """
@@ -9,7 +12,7 @@ Constant value representing how many rows of pieces there are on each side.
 """
 
 
-def initialize_default_board(width: int = 8, height: int = 8) -> BoardType:
+def initialize_default_board(width: int = 8, height: int = 8) -> Board:
     """
     Method generating default setting of a board for given dimensions.
     """
@@ -36,3 +39,6 @@ def is_legal_straight(square: Piece) -> bool:
     A piece can move one square straight forward into an empty square.
     """
     return square == Piece.EMPTY
+
+def enemy_color(piece: Piece) -> Piece:
+    return Piece.WHITE if piece == Piece.BLACK else Piece.BLACK

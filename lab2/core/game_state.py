@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import List, Tuple
+from typing import List, Tuple, Iterator
 from dataclasses import dataclass
 
 from core.piece import Piece
@@ -7,16 +7,16 @@ from core.game_utils import (
     initialize_default_board,
     is_legal_diagonal,
     is_legal_straight,
-    BoardType,
+    Board,
+    enemy_color,
 )
 
 
 class GameState:
     """
-    Represents the state of the game. 
+    Represents the state of the game.
     Contains information about the position of pieces and provides methods to generate subsequent valid game states.
     """
-
 
     @dataclass
     class Coordinate:
@@ -30,23 +30,20 @@ class GameState:
         x: int
         y: int
 
-    _board: BoardType
+    _board: Board
 
     @property
-    def board(self) -> BoardType:
-        """
-        Read-only access to the board.
-        """
+    def board(self) -> Board:
         return self._board
 
-    def __init__(self, board: BoardType | None = None) -> None:
+    def __init__(self, board: Board | None = None) -> None:
         """
         Initializes a new GameState. If no board is provided, a default board is created.
 
-        :param BoardType | None board: The initial board configuration, or None to use the default setup.
+        :param Board | None board: The initial board configuration, or None to use the default setup.
         """
 
-        self._board = [row[:] for row in board] if board is not None else initialize_default_board()
+        self._board = board if board is not None else initialize_default_board()
 
     @classmethod
     def default_from_dimensions(cls, width: int, height: int) -> GameState:
@@ -55,7 +52,7 @@ class GameState:
 
         :param int width: The width of the board.
         :param int height: The height of the board.
-        
+
         :return GameState: A new GameState instance with the specified dimensions.
         """
         if width < 2:
@@ -92,14 +89,16 @@ class GameState:
         # Deep copy
         new_state = [row[:] for row in self.board]
 
-        tmp = new_state[start.y][start.x]
+        piece_to_move = new_state[start.y][start.x]
 
         new_state[start.y][start.x] = Piece.EMPTY
-        new_state[end.y][end.x] = tmp
+        new_state[end.y][end.x] = piece_to_move
 
         return GameState(new_state)
 
-    def _get_legal_moves(self, turn: Piece) -> List[Tuple[Coordinate, Coordinate]]:
+    def _get_legal_moves(
+        self, current_player: Piece
+    ) -> Iterator[Tuple[Coordinate, Coordinate]]:
         """
         Finds all legal moves for a given player according to Breakthrough rules.
 
@@ -110,20 +109,24 @@ class GameState:
         :param Piece turn: The player whose turn it is (Piece.WHITE or Piece.BLACK).
         :return: A list of legal moves as tuples of (start_coordinate, end_coordinate).
         """
-        if turn == Piece.EMPTY:
+        if current_player == Piece.EMPTY:
             raise RuntimeError("Turn must be either Whites or Blacks")
 
         # Parametrization variable so we have 1 method covering both turns
-        delta = -1 if turn == Piece.WHITE else 1
+        delta = -1 if current_player == Piece.WHITE else 1
 
-        enemy = Piece.BLACK if turn == Piece.WHITE else Piece.WHITE
+        enemy = enemy_color(current_player)
 
-        moves = []
+        if current_player == Piece.WHITE:
+            y_range = range(len(self.board))
+        else:
+            y_range = range(len(self.board) - 1, -1, -1)
 
-        for y, row in enumerate(self.board):
+        for y in y_range:
+            row = self.board[y]
             for x, piece in enumerate(row):
                 # Skip squares that do not belong to the current player
-                if piece != turn:
+                if piece != current_player:
                     continue
 
                 coords = self.Coordinate(x, y)
@@ -136,46 +139,43 @@ class GameState:
                     if x - 1 >= 0 and is_legal_diagonal(
                         self.board[next_y][x - 1], enemy
                     ):
-                        moves.append((coords, self.Coordinate(x - 1, next_y)))
+                        yield (coords, self.Coordinate(x - 1, next_y))
 
                     if is_legal_straight(self.board[next_y][x]):
-                        moves.append((coords, self.Coordinate(x, next_y)))
+                        yield (coords, self.Coordinate(x, next_y))
 
                     if x + 1 < len(row) and is_legal_diagonal(
                         self.board[next_y][x + 1], enemy
                     ):
-                        moves.append((coords, self.Coordinate(x + 1, next_y)))
+                        yield (coords, self.Coordinate(x + 1, next_y))
 
-        return moves
-
-    def generate_states(self, turn: Piece) -> List[GameState]:
+    def generate_states(self, current_player: Piece) -> Iterator[GameState]:
         """
-        Generate a list of possible game states from current state.
+        Generate a list of possible game states from current state lazily.
 
         :param Piece turn: whose turn is now.
-        :return: list of `GameState` objects
+        :return: generic Iterator over `GameState` objects
         :raises RuntimeError: When turn is passed as `Piece.EMPTY`
         """
 
-        if self.is_final().index(0):
-            return []
+        if self.is_game_over()[0]:
+            return
 
-        if turn == Piece.EMPTY:
+        if current_player == Piece.EMPTY:
             raise RuntimeError("Turn must be either Whites or Blacks")
 
         # 1. Get the abstract moves (start -> end)
-        valid_moves = self._get_legal_moves(turn)
+        valid_moves = self._get_legal_moves(current_player)
 
-        # 2. Map the moves to actual GameState objects
-        new_states = [self._move_piece(start, end) for start, end in valid_moves]
+        # 2. Map the moves to actual GameState objects lazily
+        for start, end in valid_moves:
+            yield self._move_piece(start, end)
 
-        return new_states
-    
-    def is_final(self) -> Tuple[bool, Piece | None]:
+    def is_game_over(self) -> Tuple[bool, Piece | None]:
         for piece in self._board[0]:
             if piece == Piece.WHITE:
                 return (True, Piece.WHITE)
-        
+
         for piece in self._board[-1]:
             if piece == Piece.BLACK:
                 return (True, Piece.BLACK)

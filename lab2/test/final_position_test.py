@@ -1,5 +1,5 @@
 from core.piece import Piece
-from ai.heuristics.player_heuristics import victory
+from ai.heuristics.player_heuristics import victory_reward
 from core.game_state import GameState
 
 from test_utils import _, B, W
@@ -14,7 +14,7 @@ def is_final_white():
 
     game_state = GameState(board)
 
-    res = game_state.is_final()
+    res = game_state.is_game_over()
 
     assert res == (True, W), f"Expected white's final possition, got {res} instead"
 
@@ -29,7 +29,7 @@ def is_final_black():
 
     game_state = GameState(board)
 
-    res = game_state.is_final()
+    res = game_state.is_game_over()
 
     assert res == (True, B), f"Expected black's final possition, got {res} instead"
 
@@ -43,6 +43,6 @@ def is_not_final():
 
     game_state = GameState(board)
 
-    res = game_state.is_final()
+    res = game_state.is_game_over()
 
     assert res == (False, None), f"Expected no final possition, got {res} instead"
