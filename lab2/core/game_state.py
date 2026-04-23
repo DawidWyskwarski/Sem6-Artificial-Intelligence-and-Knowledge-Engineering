@@ -56,12 +56,14 @@ class GameState:
         :return GameState: A new GameState instance with the specified dimensions.
         """
         if width < 2:
-            raise ValueError("Width has to be at least 3")
+            raise ValueError("Width has to be at least 2")
 
-        if height < 4:
+        if height < 5:
             raise ValueError("Height has to be at least 5")
 
         return cls(initialize_default_board(width, height))
+
+    # Inne metody w dalszych punktach...
 
     def __str__(self) -> str:
         """
@@ -106,7 +108,7 @@ class GameState:
         - A piece can move one square straight forward if it is empty.
         - A piece can move one square diagonally forward to an empty square, or to capture an enemy piece.
 
-        :param Piece turn: The player whose turn it is (Piece.WHITE or Piece.BLACK).
+        :param Piece current_player: The player whose turn it is (Piece.WHITE or Piece.BLACK).
         :return: A list of legal moves as tuples of (start_coordinate, end_coordinate).
         """
         if current_player == Piece.EMPTY:

@@ -92,8 +92,8 @@ def main() -> None:
     print(current_state)
     print(f"Winner {winner}")
 
-    print(f"Odwiedzone węzły: {total_visited_nodes}", file=sys.stderr)
-    print(f"Czas działania: {total_time:.3f}s", file=sys.stderr)
+    print(f"Visited nodes: {total_visited_nodes}", file=sys.stderr)
+    print(f"Total execution time: {total_time:.3f}s", file=sys.stderr)
 
 
 if __name__ == "__main__":
