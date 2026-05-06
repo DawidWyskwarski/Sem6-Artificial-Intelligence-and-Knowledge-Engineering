@@ -48,8 +48,9 @@
             (over all (at ?v ?l))
             (at start (at ?p ?l))
         )
-        :effect (
-            at end (has ?v ?p)
+        :effect ( and
+            (at end (has ?v ?p))
+            (at end (not (at ?p ?l)))
         )
     )
 
