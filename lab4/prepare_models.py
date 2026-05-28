@@ -17,7 +17,7 @@ def create_default_models_dict() -> Dict[str, BaseEstimator]:
     
     return {
         'GaussianNB': GaussianNB(),
-        'DecisionTree': DecisionTreeClassifier(),
-        'RandomForest': RandomForestClassifier(),
-        'SVC': SVC()
+        'DecisionTree': DecisionTreeClassifier(random_state=42),
+        'RandomForest': RandomForestClassifier(random_state=42),
+        'SVC': SVC(random_state=42)
     }
